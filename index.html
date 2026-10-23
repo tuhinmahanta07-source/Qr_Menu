@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#17111d">
+<meta name="description" content="Explore the digital menu at Sohan's Mini Café.">
+<title>Sohan's Mini Café | Digital Menu</title>
+<style>
+:root{--bg:#100d14;--panel:#1c1722;--gold:#ffc857;--pink:#ff668b;--blue:#49c8f0;--text:#fff8ef;--muted:#c7bacb}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(ellipse at top,#332034 0%,var(--bg) 58%);color:var(--text);font-family:Arial,Helvetica,sans-serif}
+header{text-align:center;padding:34px 18px 26px;background:linear-gradient(135deg,#211522,#49243c 55%,#15283a);border-bottom:2px solid #e9a83c}
+.brand{font-size:clamp(30px,7vw,48px);font-weight:900;letter-spacing:1px;line-height:1.05}
+.brand span{color:var(--gold)}
+header p{margin:10px 0 0;color:#f3dbe6;letter-spacing:2px;text-transform:uppercase;font-size:12px}
+main{max-width:1100px;margin:auto;padding:22px 16px 45px}
+.search{width:100%;padding:15px 16px;border:1px solid #5b455f;border-radius:14px;background:#211a29;color:white;font-size:16px;outline:none}
+.search:focus{border-color:var(--gold)}
+.categories{display:flex;gap:9px;overflow-x:auto;padding:14px 0 22px}
+.categories button{flex:0 0 auto;border:1px solid #75566b;border-radius:30px;background:#211a29;color:#fff;padding:10px 15px;font-weight:bold;cursor:pointer}
+.categories button.active,.categories button:hover{background:var(--gold);border-color:var(--gold);color:#211522}
+.section-title{font-size:22px;margin:10px 0 16px}
+.menu{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+.card{background:linear-gradient(145deg,#251d2c,#18141e);border:1px solid #49374c;border-radius:15px;padding:17px;box-shadow:0 8px 24px #0003}
+.card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.card h3{font-size:17px;line-height:1.25;margin:0 0 7px}
+.category-label{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--blue);font-weight:bold}
+.desc{font-size:13px;line-height:1.45;color:var(--muted);margin:7px 0 13px}
+.price{font-size:18px;font-weight:800;color:var(--gold);white-space:nowrap}
+.badge{font-size:11px;color:#9fe1ad;margin-top:7px}
+#empty{display:none;color:var(--muted);padding:24px 4px}
+.contact{display:block;text-align:center;text-decoration:none;color:#211522;background:var(--gold);font-weight:bold;border-radius:12px;padding:15px;margin:25px 0 0}
+.note{color:var(--muted);font-size:12px;line-height:1.6;text-align:center;margin-top:18px}
+footer{text-align:center;padding:22px;background:#0b0910;color:#a99eaf;font-size:12px}
+@media(max-width:760px){.menu{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:480px){.menu{grid-template-columns:1fr}.card{padding:16px}.brand{font-size:32px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">SOHAN'S <span>MINI CAFÉ</span></div>
+  <p>Taste the happiness ♡</p>
+</header>
+<main>
+  <input id="search" class="search" type="search" placeholder="Search Maggi, pasta, shakes..." aria-label="Search menu">
+  <nav class="categories" id="categories" aria-label="Menu categories"></nav>
+  <h2 class="section-title" id="sectionTitle">Our Menu</h2>
+  <section class="menu" id="menu"></section>
+  <p id="empty">No dishes found. Try a different search or category.</p>
+  <!-- Replace the placeholder number with the cafe's WhatsApp number, including country code. -->
+  <a class="contact" id="contactLink" href="https://wa.me/910000000000" target="_blank" rel="noopener">Contact Sohan's Mini Café on WhatsApp</a>
+  <p class="note">Menu and prices should be confirmed with the café before publishing.<br>Food photographs can be added later using the café's approved images.</p>
+</main>
+<footer>Thank you for visiting Sohan's Mini Café. Visit again! ♡</footer>
+<script>
+const dishes = [
+ {name:"Veg Cheese Maggi",category:"Maggi",price:69,desc:"Maggi noodles with cheese."},
+ {name:"Chicken Cheese Maggi",category:"Maggi",price:89,desc:"Cheesy Maggi with chicken."},
+ {name:"Veg Cheese Sandwich",category:"Sandwiches",price:69,desc:"Toasted sandwich with vegetables and cheese."},
+ {name:"Veg Cheese Corn Sandwich",category:"Sandwiches",price:85,desc:"Vegetables, sweet corn and cheese."},
+ {name:"Chicken Tandoori Sandwich",category:"Sandwiches",price:89,desc:"Chicken sandwich with tandoori flavour."},
+ {name:"Famous Popcorn (6 Pieces)",category:"Popcorn - Paneer",price:65,desc:"Crispy bite-sized popcorn snack."},
+ {name:"Famous Popcorn (12 Pieces)",category:"Popcorn - Paneer",price:125,desc:"Crispy bite-sized popcorn snack."},
+ {name:"Paneer Popcorn (24 Pieces)",category:"Popcorn - Paneer",price:245,desc:"Crispy paneer bites."},
+ {name:"Chicken Popcorn (6 Pieces)",category:"Popcorn - Chicken",price:79,desc:"Crunchy chicken popcorn."},
+ {name:"Chicken Popcorn (15 Pieces)",category:"Popcorn - Chicken",price:149,desc:"Crunchy chicken popcorn."},
+ {name:"Chicken Popcorn (24 Pieces)",category:"Popcorn - Chicken",price:279,desc:"Crunchy chicken popcorn."},
+ {name:"White Sauce Pasta (Veg)",category:"Pasta",price:119,desc:"Creamy white sauce pasta with vegetables.",veg:true},
+ {name:"White Sauce Pasta (Non-Veg)",category:"Pasta",price:139,desc:"Creamy white sauce pasta."},
+ {name:"Tea (Small)",category:"Tea",price:9,desc:"A small cup of tea."},
+ {name:"Tea (Medium)",category:"Tea",price:15,desc:"A medium cup of tea."},
+ {name:"Tea (Large)",category:"Tea",price:20,desc:"A large cup of tea."},
+ {name:"Mango Shake",category:"Beverages",price:80,desc:"Chilled mango milkshake."},
+ {name:"Lassi",category:"Beverages",price:65,desc:"Refreshing chilled lassi."},
+ {name:"Banana Shake",category:"Beverages",price:70,desc:"Creamy banana shake."},
+ {name:"Orange Shake",category:"Beverages",price:65,desc:"Chilled orange shake."},
+ {name:"Oreo Shake",category:"Beverages",price:65,desc:"Oreo-inspired shake."},
+ {name:"Kit Kat Shake",category:"Beverages",price:139,desc:"Chocolate wafer milkshake."},
+ {name:"Cold Coffee",category:"Coffee",price:125,desc:"Chilled coffee drink."},
+ {name:"Milk Coffee",category:"Coffee",price:55,desc:"Coffee with milk."},
+ {name:"Black Coffee",category:"Coffee",price:35,desc:"Classic black coffee."},
+ {name:"Chicken Burger",category:"Burger",price:199,desc:"Chicken burger served fresh."}
+];
+const categories=["All",...new Set(dishes.map(d=>d.category))];
+let selected="All";
+const menu=document.getElementById("menu");
+const search=document.getElementById("search");
+const empty=document.getElementById("empty");
+const categoryNav=document.getElementById("categories");
+const sectionTitle=document.getElementById("sectionTitle");
+function renderCategories(){
+ categoryNav.innerHTML="";
+ categories.forEach(category=>{
+  const button=document.createElement("button");
+  button.textContent=category;
+  button.className=category===selected?"active":"";
+  button.type="button";
+  button.addEventListener("click",()=>{selected=category;renderCategories();renderMenu();});
+  categoryNav.appendChild(button);
+ });
+}
+function renderMenu(){
+ const q=search.value.trim().toLowerCase();
+ const filtered=dishes.filter(d=>{
+  const categoryMatch=selected==="All"||d.category===selected;
+  const searchMatch=(d.name+" "+d.category+" "+d.desc).toLowerCase().includes(q);
+  return categoryMatch&&searchMatch;
+ });
+ menu.replaceChildren();
+ filtered.forEach(d=>{
+  const card=document.createElement("article");card.className="card";
+  const top=document.createElement("div");top.className="card-top";
+  const left=document.createElement("div");
+  const label=document.createElement("div");label.className="category-label";label.textContent=d.category;
+  const name=document.createElement("h3");name.textContent=d.name;
+  left.append(label,name);
+  const price=document.createElement("div");price.className="price";price.textContent="₹"+d.price;
+  top.append(left,price);
+  const desc=document.createElement("p");desc.className="desc";desc.textContent=d.desc;
+  card.append(top,desc);
+  if(d.veg){const badge=document.createElement("div");badge.className="badge";badge.textContent="● Vegetarian";card.appendChild(badge);}
+  menu.appendChild(card);
+ });
+ empty.style.display=filtered.length?"none":"block";
+ sectionTitle.textContent=selected==="All"?"Our Menu":selected;
+}
+search.addEventListener("input",renderMenu);
+renderCategories();renderMenu();
+</script>
+</body>
+</html>
